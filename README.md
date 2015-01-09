@@ -24,7 +24,7 @@ You can also use s3pub's interface to upload files to S3.
   publisher.publish options
 
   # you can upload individual files as well
-  publisher.upload "<source-file>", "<temp-path-to-store-compressed-files>", <destination-s3-bucket>", "<destination-file>", {"CacheControl": "max-age=86400"}
+  publisher.upload "<source-file>", "<temp-path-to-store-compressed-files>", "<destination-s3-bucket>", "<destination-file>", {"CacheControl": "max-age=86400"}
 ```
 
 ## Options
