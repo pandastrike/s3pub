@@ -17,7 +17,6 @@ module.exports = class Publisher
       region
     }
 
-
   publish: ({source, destination, s3Options}) ->
     source = resolve source
     compressedDir = resolve source, randomKey(16, "base64url")
@@ -27,16 +26,14 @@ module.exports = class Publisher
     fs.mkdirSync compressedDir
     paths = glob(source, "**/*")
     all(
-      @upload({sourceFile: join(source, path), compressedDir, destination, destinationFile: path, options: s3Options}) for path in paths
+      @upload({sourceFile: join(source, path), compressedDir, destination, destinationFile: path, s3Options}) for path in paths
     )
-    .then ->
+    .finally ->
       fs.rmdirSync compressedDir
-
 
   deleteAll: ({destination}) ->
     console.log "Deleting all files in S3 bucket '#{destination}'"
     # TODO: Implement functionality
-
 
   compress: ({sourceFile, compressedFile}, callback) ->
     readStream = fs.createReadStream(sourceFile)
@@ -49,7 +46,7 @@ module.exports = class Publisher
     readStream.pipe(zlib.createGzip()).pipe(writeStream)
 
 
-  upload: ({sourceFile, compressedDir, destination, destinationFile, options}) ->
+  upload: ({sourceFile, compressedDir, destination, destinationFile, s3Options}) ->
     
     promise (resolve, reject) =>
 
@@ -75,7 +72,7 @@ module.exports = class Publisher
           ContentEncoding: "gzip"
           ContentLength: fs.statSync(compressedFile).size
           Body: readStream
-        params = merge(params, options) if options?
+        params = merge(params, s3Options) if s3Options?
         s3 = new AWS.S3()
         s3.putObject params, (err, data) -> 
           unless err?

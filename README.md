@@ -38,7 +38,8 @@ You can also pass the path to an options file as an argument to s3pub. The optio
     region: "<s3-region>"
     source: "<path-to-source-files>"
     destination: "<s3-bucket>"
-    s3Options: {}
+    s3Options: 
+      "CacheControl": "max-age=86400"
 ```
 
 [0]:#options
