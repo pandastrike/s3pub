@@ -17,23 +17,27 @@ module.exports = class Publisher
       region
     }
 
-  publish: ({source, destination, s3Options}) ->
-    source = resolve source
-    compressedDir = resolve source, randomKey(16, "base64url")
+  publish: ({sourcePath, destinationBucket, destinationPath, s3Options}) ->
+    sourcePath = resolve sourcePath
+    compressedPath = resolve sourcePath, randomKey(16, "base64url")
 
-    @deleteAll({destination})
+    console.log()
+    @deleteAll({destinationBucket, destinationPath})
+    .then =>
+      fs.mkdirSync compressedPath
+      paths = glob(sourcePath, "**/*")
+      all(
+        @upload({sourcePath, sourceFile: path, compressedPath, destinationBucket, destinationPath, s3Options}) for path in paths
+      )
+      .finally ->
+        fs.rmdirSync compressedPath
+        console.log()
 
-    fs.mkdirSync compressedDir
-    paths = glob(source, "**/*")
-    all(
-      @upload({sourceFile: join(source, path), compressedDir, destination, destinationFile: path, s3Options}) for path in paths
-    )
-    .finally ->
-      fs.rmdirSync compressedDir
-
-  deleteAll: ({destination}) ->
-    console.log "Deleting all files in S3 bucket '#{destination}'"
-    # TODO: Implement functionality
+  deleteAll: ({destinationBucket, destinationPath}) ->
+    promise (resolve, reject) ->
+      console.log "Deleting all files in S3 bucket '#{destinationBucket}/#{destinationPath}'"
+      # TODO: Implement functionality
+      resolve()
 
   compress: ({sourceFile, compressedFile}, callback) ->
     readStream = fs.createReadStream(sourceFile)
@@ -46,17 +50,19 @@ module.exports = class Publisher
     readStream.pipe(zlib.createGzip()).pipe(writeStream)
 
 
-  upload: ({sourceFile, compressedDir, destination, destinationFile, s3Options}) ->
+  upload: ({sourcePath, sourceFile, compressedPath, destinationBucket, destinationPath, s3Options}) ->
     
     promise (resolve, reject) =>
 
-      compressedFile = join compressedDir, randomKey(16, 'base64url')
+      destinationFile = join destinationPath, sourceFile
+      sourceFile = join sourcePath, sourceFile
+      compressedFile = join compressedPath, randomKey(16, 'base64url')
 
       onFinish = ->
         fs.unlinkSync compressedFile
 
       onError = (err) ->
-        console.log "Failed to upload file '#{sourceFile}' to S3 bucket '#{destination}'"
+        console.log "Failed to upload file '#{sourceFile}' to S3 bucket '#{destinationBucket}/#{destinationPath}'"
         onFinish()
         reject err
 
@@ -66,7 +72,7 @@ module.exports = class Publisher
         readStream = fs.createReadStream(compressedFile)
 
         params = 
-          Bucket: destination
+          Bucket: destinationBucket
           Key: destinationFile
           ContentType: mime.lookup(sourceFile)
           ContentEncoding: "gzip"
@@ -76,7 +82,7 @@ module.exports = class Publisher
         s3 = new AWS.S3()
         s3.putObject params, (err, data) -> 
           unless err?
-            console.log "Sucessfully uploaded file '#{sourceFile}' to S3 bucket '#{destination}'"
+            console.log "Sucessfully uploaded file '#{sourceFile}' to S3 bucket '#{destinationBucket}/#{destinationPath}'"
             onFinish()
             resolve data
           else

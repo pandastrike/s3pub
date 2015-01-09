@@ -13,8 +13,10 @@ You can use s3pub as a command line tool to upload assets to S3.
 
 By passing the required parameters as arguments:
 ```
-  s3pub <s3-access-key-id> <s3-secret-access-key> <s3-region> <source-dir> <destination-s3-bucket>
+  s3pub <s3-access-key-id> <s3-secret-access-key> <s3-region> <source-path> <destination-s3-bucket> <destination-s3-path>
 ```
+> If `source-path` is a directory, s3pub will recursively upload all files in the directory and subdirectories
+
 Or by passing an options file as an argument (see *[Options file format][0]* below.): 
 ```
   s3pub <path/to/options.cson>
@@ -33,7 +35,7 @@ You can also use s3pub's Publisher class to upload assets to S3 programmatically
   publisher.publish options
 
   # you can upload individual files as well
-  publisher.upload "<source-file>", "<temp-path-to-store-compressed-files>", "<destination-s3-bucket>", "<destination-file>", {"CacheControl": "max-age=86400"}
+  publisher.upload "<source-file>", "<temp-path-to-store-compressed-files>", "<destination-s3-bucket>", "<destination-s3-path-to-file>", {"CacheControl": "max-age=86400"}
 ```
 
 ## Options
@@ -45,8 +47,9 @@ You can also pass the path to an options file as an argument to s3pub. The optio
     accessKeyId: "<s3-access-key-id>"
     secretAccessKey: "<s3-secret-access-key>"
     region: "<s3-region>"
-    source: "<path-to-source-files>"
-    destination: "<s3-bucket>"
+    sourcePath: "<path-to-source-files>"
+    destinationBucket: "<s3-bucket>"
+    destinationPath: "<s3-path>"
     s3Options: 
       "CacheControl": "max-age=86400"
 ```

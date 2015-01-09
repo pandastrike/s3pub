@@ -1,5 +1,5 @@
 #!/usr/bin/env coffee
-[interpreter, script, accessKeyId, secretAccessKey, region, source, destination] = process.argv
+[interpreter, script, accessKeyId, secretAccessKey, region, sourcePath, destinationBucket, destinationPath] = process.argv
 
 {parse} = require "c50n"
 {read} = require "fairmont"
@@ -10,24 +10,25 @@ if process.argv.length == 3
   optionsFile = resolve process.cwd(), accessKeyId
   optionsDir = dirname optionsFile
   {options} = parse(read(optionsFile))
-  options.source = resolve(optionsDir, options.source) if options.source?
+  options.sourcePath = resolve(optionsDir, options.sourcePath) if options.sourcePath?
   options.compressedDir = resolve(optionsDir, options.compressedDir) if options.compressedDir?
 else
-  unless accessKeyId? and secretAccessKey? and region? and source? and destination?
-    console.log ""
+  unless accessKeyId? and secretAccessKey? and region? and sourcePath? and destinationBucket? and destinationPath?
+    console.log()
     console.log "Usage:"
-    console.log "         bin/publish s3-access-key-id s3-secret-access-key s3-region source-dir destination-s3-bucket"
-    console.log "or"
+    console.log "         bin/publish s3-access-key-id s3-secret-access-key s3-region source-path destination-s3-bucket destination-s3-path"
+    console.log "\nor\n"
     console.log "         bin/publish path/to/options.cson"
-    console.log ""
+    console.log()
     return
 
   options = {
     accessKeyId
     secretAccessKey
     region
-    source
-    destination
+    sourcePath
+    destinationBucket
+    destinationPath
     s3Options: {}
   }
 
