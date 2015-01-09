@@ -1,19 +1,25 @@
 s3pub
 =====
 
-Simple module to publish assets to S3.
+s3pub is a simple utility to publish assets to S3.
+You can use s3pub in two ways.
 
-You can use s3pub from the command line to upload static assets to S3.
-    
-    s3pub <s3-access-key-id> <s3-secret-access-key> <s3-region> <source-dir> <destination-s3-bucket>
+## Upload assets from the command line
 
-  or
+You can use s3pub as a command line tool to upload assets to S3.
 
-    s3pub <path/to/options.cson>
+By passing the required parameters as arguments:
+```
+  s3pub <s3-access-key-id> <s3-secret-access-key> <s3-region> <source-dir> <destination-s3-bucket>
+```
+Or by passing an options file as an argument (see *[Options file format][0]* below.): 
+```
+  s3pub <path/to/options.cson>
+```
 
-See *[Options][0]* below.
+## Upload assets programmatically
 
-You can also use s3pub's interface to upload files to S3.
+You can also use s3pub's Publisher class to upload assets to S3 programmatically.
 
 ```coffeescript
   {Publisher} = require "s3pub"
