@@ -36,8 +36,8 @@ You can also pass the path to an options file as an argument to s3pub. The optio
     accessKeyId: "<s3-access-key-id>"
     secretAccessKey: "<s3-secret-access-key>"
     region: "<s3-region>"
-    source: "path-to-source-files"
-    destination: "s3-bucket"
+    source: "<path-to-source-files>"
+    destination: "<s3-bucket>"
     s3Options: {}
 ```
 
