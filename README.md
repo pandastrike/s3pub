@@ -2,7 +2,10 @@ s3pub
 =====
 
 s3pub is a simple utility to publish assets to S3.
+
 You can use s3pub in two ways.
+
+> Warning: s3pub deletes all the contents in the destination bucket before uploading files from source path.
 
 ## Upload assets from the command line
 
