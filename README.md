@@ -3,9 +3,11 @@ s3pub
 
 s3pub is a simple utility to publish assets to S3.
 
-You can use s3pub in two ways.
-
 > Warning: s3pub deletes all the contents in the destination bucket before uploading files from source path.
+
+> Limitation:  If there are more than 1000 files in the bucket only 1000 will get deleted
+
+You can use s3pub in two ways.
 
 ## Upload assets from the command line
 
@@ -50,8 +52,6 @@ You can also pass the path to an options file as an argument to s3pub. The optio
     sourcePath: "<path-to-source-files>"
     destinationBucket: "<s3-bucket>"
     destinationPath: "<s3-path>"
-    s3Options: 
-      "CacheControl": "max-age=86400"
 ```
 
 [0]:#options
