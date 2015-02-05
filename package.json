@@ -1,6 +1,6 @@
 {
   "name": "s3pub",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Commandline tool and API to publish assets to S3",
   "main": "src/index.coffee",
   "bin": "bin/publish",
