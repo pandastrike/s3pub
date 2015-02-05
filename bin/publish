@@ -4,6 +4,7 @@
 {parse} = require "c50n"
 {read} = require "fairmont"
 {resolve, dirname} = require "path"
+fs = require "fs"
 Publisher = require "../src/publisher"
 
 if process.argv.length == 3
@@ -31,6 +32,11 @@ else
     destinationPath
     s3Options: {}
   }
+
+unless fs.existsSync(sourcePath)
+  console.log "Error: "
+  console.log "           source-path does not exist\n"
+  return
 
 publisher = new Publisher options
 publisher.publish options
