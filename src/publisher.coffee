@@ -83,7 +83,6 @@ module.exports = class Publisher
       console.log "Deleting all files in S3 path '#{destinationBucket}/#{destinationPath}'"
       @listAll({bucket: destinationBucket, path: destinationPath})
       .then (keys) =>
-        resolve()
         if keys?.length > 0
           params =
             Bucket: destinationBucket
