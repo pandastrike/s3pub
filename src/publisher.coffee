@@ -145,6 +145,7 @@ module.exports = class Publisher
         params =
           Bucket: destinationBucket
           Key: destinationFile
+          CacheControl: "max-age=0"
           ContentType: mime.lookup(sourceFile)
           ContentEncoding: "gzip"
           ContentLength: fs.statSync(compressedFile).size
