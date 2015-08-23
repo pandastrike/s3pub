@@ -45,6 +45,7 @@ module.exports = class Publisher
       else
         resolve()
     .catch (err) =>
+      console.log "Error publishing to S3: #{err}"
       @revertAll({destinationBucket, source: tempPath, destinationPath})
 
   listAll: ({bucket, path}) ->
@@ -61,7 +62,7 @@ module.exports = class Publisher
         else
           reject err
 
-  revertAll: (destinationBucket, source, destinationPath) ->
+  revertAll: ({destinationBucket, source, destinationPath}) ->
     promise (resolve, reject) =>
       @listAll({bucket: destinationBucket, path: source})
       .then (keys) =>
@@ -75,8 +76,6 @@ module.exports = class Publisher
             resolve()
         else
           resolve()
-        console.log "Failed to publish: ", err
-        resolve()
 
   deleteAll: ({destinationBucket, destinationPath}) ->
     promise (resolve, reject) =>
